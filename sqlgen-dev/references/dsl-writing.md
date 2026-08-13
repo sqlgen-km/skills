@@ -88,16 +88,20 @@ SQL 语句;
 
 ### 类型映射
 
-| DSL 类型 | Go 类型 |
-|----------|---------|
-| `int` / `int64` / `int32` | 同左 |
-| `float64` | `float64` |
-| `string` | `string` |
-| `bool` | `bool` |
-| `time.Time` | `time.Time` |
-| `[]int64` / `[]string` | 同左 |
-| `*string` / `*int64` / `*bool` | 同左（可空参数） |
-| `ModelName` | model struct |
+| DSL 类型 | Go 类型 | Java 类型 |
+|----------|---------|-----------|
+| `int` / `int64` | 同左 | `long` |
+| `int32` | `int32` | `int` |
+| `float64` | `float64` | `java.math.BigDecimal` |
+| `string` | `string` | `String` |
+| `bool` | `bool` | `boolean` |
+| `time.Time` | `time.Time` | `java.time.LocalDateTime` |
+| `[]int64` | `[]int64` | `long[]` |
+| `[]string` | `[]string` | `String[]` |
+| `*string` | `*string` | `String` |
+| `*int64` | `*int64` | `Long` |
+| `*bool` | `*bool` | `Boolean` |
+| `ModelName` | model struct | model Record |
 
 ### 参数引用
 
