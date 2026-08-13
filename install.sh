@@ -52,7 +52,7 @@ resolve_targets() {
   case "$t" in
     all)  printf '%s\n' "${ALL_TARGETS[@]}" ;;
     hermes|claude) printf '%s\n' "$t" ;;
-    *) die "未知 target '$t'，可用: hermes | claude | all" ;;
+    *) return 1 ;;
   esac
 }
 
@@ -121,8 +121,8 @@ case "$ACTION" in
     do_list
     ;;
   install|uninstall)
-    mapfile -t targets < <(resolve_targets "$TARGET_ARG")
-    for target in "${targets[@]}"; do
+    targets="$(resolve_targets "$TARGET_ARG")" || die "未知 target '$TARGET_ARG'，可用: hermes | claude | all"
+    for target in $targets; do
       if [ "$ACTION" = install ]; then do_install "$target"; else do_uninstall "$target"; fi
     done
     ;;
