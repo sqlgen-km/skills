@@ -7,14 +7,35 @@ sqlgen 多方言 SQL 代码生成器的配套技能仓库，为代码开发 agen
 ```
 skills/
 ├── README.md
-└── sqlgen-dev/          # sqlgen 开发指南技能
-    ├── SKILL.md         # 技能主体：架构、工作流、关键陷阱
-    ├── references/      # 分支/专题参考文档（渐进披露）
-    └── templates/       # 模板（sqlg.yaml 等）
+├── install.sh          # 技能安装脚本
+└── sqlgen-dev/         # sqlgen DSL 编写指南技能
+    ├── SKILL.md        # 总揽（定位 + 三入口）
+    ├── references/     # dsl-writing / configuration / forbidden
+    └── templates/      # sqlg.yaml 配置模板
 ```
 
-## 使用
+## 安装
 
-将 `sqlgen-dev/` 目录放入 agent 的技能目录（如 Hermes 的 `~/.hermes/skills/`），
-agent 在开发/维护 sqlgen 相关任务时加载 `sqlgen-dev` 技能即可获得完整的
-架构、DSL 规范、代码生成流程与历史陷阱上下文。
+### 一键脚本
+
+```bash
+./install.sh hermes              # 安装到 Hermes Agent
+./install.sh claude              # 安装到 Claude Code
+./install.sh all                 # 安装到全部（默认）
+./install.sh --list              # 查看各 agent 安装状态
+./install.sh --uninstall claude  # 卸载
+./install.sh --dry-run all       # 只预览不执行
+```
+
+支持目标：
+
+| target | 安装目录 |
+|--------|---------|
+| hermes | `~/.hermes/skills/software-development/sqlgen-dev/` |
+| claude | `~/.claude/skills/sqlgen-dev/` |
+
+追加新 agent 系统：在 `install.sh` 的注册表加一行并同步 `ALL_TARGETS` 即可。
+
+### 手动安装
+
+将 `sqlgen-dev/` 目录复制到目标 agent 的技能目录。
