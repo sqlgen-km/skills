@@ -1,0 +1,21 @@
+# sqlg.yaml — sqlgen 代码生成器配置
+# 放在项目工作目录下，运行 sqlgen（无参数）
+
+# 全局方言（默认 ["pg"]）
+engines: [pg, mysql, oracle, mssql]
+
+# Go 代码生成（可选）
+go:
+  tags: [json]
+  packages:
+    - out: "internal/persistence/sqlgen"
+      files: ["sqlgen/*.sql"]
+
+# Java 代码生成（可选）
+java:
+  packages:
+    - modelPackage: "com.example.entity"
+      mapperPackage: "com.example.mapper"
+      engineSubPackage: false   # true 时引擎实现进 mapperPackage.{engine} 子包
+      out: "src/gen/java"
+      files: ["sqlgen/*.sql"]
