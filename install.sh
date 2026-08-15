@@ -4,7 +4,7 @@
 #
 # 源技能：本脚本同目录下的 sqlgen-dev/（SKILL.md + references/ + templates/）
 # 用法：
-#   ./install.sh [hermes|claude|all]    安装（默认 all）
+#   ./install.sh [hermes|claude|agents|all]    安装（默认 all）
 #   ./install.sh --uninstall [target]   卸载
 #   ./install.sh --list                 列出各 agent 安装状态
 #   ./install.sh --dry-run [target]     只预览不执行
@@ -20,8 +20,9 @@ SKILL_SRC="$SCRIPT_DIR/sqlgen-dev"
 declare -A INSTALL_DIR=(
   [hermes]="${HERMES_DIR:-$HOME/.hermes/skills/software-development/sqlgen-dev}"
   [claude]="${CLAUDE_DIR:-$HOME/.claude/skills/sqlgen-dev}"
+  [agents]="${AGENTS_DIR:-$HOME/.agents/skills/sqlgen-dev}"
 )
-ALL_TARGETS=(hermes claude)
+ALL_TARGETS=(hermes claude agents)
 
 # ── 工具函数 ────────────────────────────────────────────────────────────
 die() { echo "❌ $*" >&2; exit 1; }
@@ -36,6 +37,7 @@ usage() {
 target（可选，默认 all）:
   hermes   安装到 Hermes Agent（~/.hermes/skills/software-development/sqlgen-dev/）
   claude   安装到 Claude Code（~/.claude/skills/sqlgen-dev/）
+  agents   安装到通用 Agent Skills 目录（~/.agents/skills/sqlgen-dev/，Codex/Cursor/Copilot/Gemini CLI 共享）
   all      安装到全部（默认）
 
 选项:
@@ -48,12 +50,12 @@ EOF
 
 # 解析 target 参数，返回以空格分隔的目标列表
 resolve_targets() {
-  local t="$1"
-  case "$t" in
-    all)  printf '%s\n' "${ALL_TARGETS[@]}" ;;
-    hermes|claude) printf '%s\n' "$t" ;;
-    *) return 1 ;;
-  esac
+  local t="$1" name
+  [ "$t" = all ] && { printf '%s\n' "${ALL_TARGETS[@]}"; return 0; }
+  for name in "${ALL_TARGETS[@]}"; do
+    [ "$name" = "$t" ] && { printf '%s\n' "$t"; return 0; }
+  done
+  return 1
 }
 
 installed_marker() {  # 输出目标目录是否已安装
@@ -121,7 +123,7 @@ case "$ACTION" in
     do_list
     ;;
   install|uninstall)
-    targets="$(resolve_targets "$TARGET_ARG")" || die "未知 target '$TARGET_ARG'，可用: hermes | claude | all"
+    targets="$(resolve_targets "$TARGET_ARG")" || die "未知 target '$TARGET_ARG'，可用: ${ALL_TARGETS[*]} | all"
     for target in $targets; do
       if [ "$ACTION" = install ]; then do_install "$target"; else do_uninstall "$target"; fi
     done
